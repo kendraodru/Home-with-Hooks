@@ -1,15 +1,16 @@
 import React, {useState, useEffect} from 'react';
+import {useFetch} from './hooks.js'
 
 function Stories() {
-    const [stories, setStories] = useState([]);
+    const stories = useFetch('https://news-proxy-server.appspot.com/topstories', []);
 
-    useEffect(()=>{
-        fetch('https://news-proxy-server.appspot.com/topstories')
-            .then(response => response.json())
-            .then(json => {
-                setStories(json)
-            })
-    },[])
+    // useEffect(()=>{
+    //     fetch('https://news-proxy-server.appspot.com/topstories')
+    //         .then(response => response.json())
+    //         .then(json => {
+    //             setStories(json)
+    //         })
+    // },[])
 
 
     return (
