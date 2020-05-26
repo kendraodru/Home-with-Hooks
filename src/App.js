@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import Joke from './joke';
-import Stories from './stories'
+import Stories from './stories';
+import Tasks from './task';
 
 function App() {
 
   const [userQuery, setUserQuery] = useState('');
 
   const updateUserQuery = event => {
-    console.log('userQuery', userQuery)
     setUserQuery(event.target.value);
+    console.log('userQuery', userQuery)
   }
 
   const searchQuery = () =>{
@@ -28,6 +29,8 @@ function App() {
       </div>
       <hr />
       <Joke />
+      <hr />
+      <Tasks />
       <hr />
       <Stories />
     </div>
