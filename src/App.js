@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Joke from './joke';
 import Stories from './stories';
 import Tasks from './task';
+import Gallery from './gallery'
 
 function App() {
 
@@ -31,6 +32,8 @@ function App() {
       <Joke />
       <hr />
       <Tasks />
+      <hr />
+      <Gallery />
       <hr />
       <Stories />
     </div>
