@@ -6,7 +6,9 @@ function Gallery(){
 
     useEffect(()=>{
         setInterval(()=> {
-            setIndex((index + 1) % PICTURES.length)
+            setIndex(sortedIndex =>{
+                return (sortedIndex + 1) % PICTURES.length;  
+            })
         },3000);
     },[]);
 
