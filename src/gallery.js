@@ -4,6 +4,12 @@ import PICTURES from './data/pictures'
 function Gallery(){
     const [index, setIndex] = useState(0);
 
+    useEffect(()=>{
+        setInterval(()=> {
+            setIndex((index + 1) % PICTURES.length)
+        },3000);
+    },[]);
+
     return(
         <div className='Gallery'>
             <img 
