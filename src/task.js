@@ -1,10 +1,31 @@
-import React,  { useState } from 'react';
-import uuid from 'uuid/v4'
+import React,  { useState, useEffect } from 'react';
+import uuid from 'uuid/v4';
+const TASK_STORAGE_KEY = "TASK_STORAGE_KEY";
+
+const storeTasks = (tasksMap) => {
+    localStorage.setItem(
+        TASK_STORAGE_KEY,
+        JSON.stringify(tasksMap)
+    );
+}
+
+const readStoredTasks = () =>{
+    const tasksMap = JSON.parse(localStorage.getItem(TASK_STORAGE_KEY));
+
+    return tasksMap ? tasksMap : {tasks: [], completedTasks: []};
+}
+
 
 function Tasks(){
     const [taskText, setTaskText] = useState('');
-    const [tasks, setTasks] = useState([]);
-    const [completedTasks, setCompletedTasks] = useState([]);
+    const storedTasks = readStoredTasks();
+    const [tasks, setTasks] = useState(storedTasks.tasks);
+    const [completedTasks, setCompletedTasks] = useState(storedTasks.completedTasks);
+
+    useEffect(() => {
+        storeTasks({ tasks, completedTasks });
+    });
+
 
     const handleKeyPress = event => {
         if (event.key === 'Enter') addTask()
