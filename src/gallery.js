@@ -11,8 +11,6 @@ function Gallery(){
     const [increment, setIncrement] = useState(1)
 
     useEffect(()=>{
-        console.log("delay",delay)
-        console.log("increment", increment)
         const interval = setInterval(()=> {
             setIndex(sortedIndex =>{
                 return (sortedIndex + increment) % PICTURES.length;  

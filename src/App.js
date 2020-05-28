@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Joke from './joke';
 import Stories from './stories';
 import Tasks from './task';
-import Gallery from './gallery'
+import Gallery from './gallery';
+import Matrix from './matrix';
 
 function App() {
 
@@ -46,6 +47,8 @@ function App() {
       </div>
       <hr />
       <Stories />
+      <hr/>
+      <Matrix />
     </div>
   );
 }
