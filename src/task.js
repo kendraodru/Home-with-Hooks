@@ -1,52 +1,89 @@
-import React,  { useState, useEffect } from 'react';
+import React,  { useState, useEffect, useReducer } from 'react';
 import uuid from 'uuid/v4';
-const TASK_STORAGE_KEY = "TASK_STORAGE_KEY";
 
-const storeTasks = (tasksMap) => {
+
+const initialTasksState = {
+    tasks: [],
+    completedTasks: []
+};
+
+const TYPES = {
+    ADD_TASK: 'ADD_TASK',
+    COMPLETE_TASK: 'COMPLETE_TASK',
+    DELETE_TASK: 'DELETE_TASK'
+};
+
+const tasksReducer = (state, action) => {
+    // console.log('state', state, 'action', action);
+
+    switch (action.type) {
+        case TYPES.ADD_TASK:
+            return {
+                ...state,
+                tasks: [...state.tasks, action.task]
+            }
+        case TYPES.COMPLETE_TASK:
+            const { completedTask } = action;
+
+            return {
+                ...state,
+                completedTasks: [...state.completedTasks, completedTask],
+                tasks: state.tasks.filter(t => t.id !== completedTask.id)
+            }
+        case TYPES.DELETE_TASK:
+            return {
+                ...state,
+                completedTasks: state.completedTasks.filter(t => t.id !== action.task.id)
+            }
+        default:
+            return state;
+    }
+}
+
+const TASKS_STORAGE_KEY = 'TASKS_STORAGE_KEY';
+
+const storeTasks = (taskMap) => {
     localStorage.setItem(
-        TASK_STORAGE_KEY,
-        JSON.stringify(tasksMap)
+        TASKS_STORAGE_KEY,
+        JSON.stringify(taskMap)
     );
 }
 
-const readStoredTasks = () =>{
-    const tasksMap = JSON.parse(localStorage.getItem(TASK_STORAGE_KEY));
+const readStoredTasks = () => {
+    const tasksMap = JSON.parse(localStorage.getItem(TASKS_STORAGE_KEY));
 
-    return tasksMap ? tasksMap : {tasks: [], completedTasks: []};
+    return tasksMap ? tasksMap : initialTasksState;
 }
 
-
-function Tasks(){
+function Tasks() {
     const [taskText, setTaskText] = useState('');
     const storedTasks = readStoredTasks();
-    const [tasks, setTasks] = useState(storedTasks.tasks);
-    const [completedTasks, setCompletedTasks] = useState(storedTasks.completedTasks);
+
+    const [state, dispatch] = useReducer(tasksReducer, storedTasks);
+    const { tasks, completedTasks } = state;
 
     useEffect(() => {
         storeTasks({ tasks, completedTasks });
     });
 
+    const updateTaskText = event => {
+        setTaskText(event.target.value);
+    }
+
+    const addTask = () => {
+        dispatch({ type: TYPES.ADD_TASK, task: { taskText, id: uuid() } });
+    }
+
+    const completeTask = completedTask => () => {
+        dispatch({ type: TYPES.COMPLETE_TASK, completedTask });
+    }
+
+    const deleteTask = task => () => {
+        dispatch({ type: TYPES.DELETE_TASK, task });
+    }
 
     const handleKeyPress = event => {
         if (event.key === 'Enter') addTask()
-    }
-
-    const updateTaskText = (event)=>{
-        setTaskText(event.target.value);
-    }
-    
-    const addTask = ()=>{
-        setTasks([...tasks, {taskText, id: uuid()}]);
-        //we dont want to modify the old array, instead we will make a new array
-    }
-
-    const completeTask = completedTask => () =>{
-        setCompletedTasks([...completedTasks, completedTask]);
-        setTasks(tasks.filter(task => task.id !== completedTask.id))
-    }
-
-    const deleteTask = taskToDelete => () =>{
-        setCompletedTasks(completedTasks.filter(task => task.id !== taskToDelete.id))
     }
 
     return (
@@ -58,21 +95,23 @@ function Tasks(){
             </div>
             <div className='task-list'>
                 {
-                    tasks.map(task=>{
-                        const {id, taskText} = task;
-                        return(
+                    tasks.map(task => {
+                        const { id, taskText } = task;
+
+                        return (
                             <div key={id} onClick={completeTask(task)}>
                                 {taskText}
                             </div>
-                        )
+                        );
                     })
                 }
             </div>
             <div className='completed-list'>
                 {
-                    completedTasks.map(task =>{
-                        const {id, taskText} = task;
-                        return(
+                    completedTasks.map(task => {
+                        const { id, taskText } = task;
+
+                        return (
                             <div key={id}>
                                 {taskText}{' '}
                                 <span onClick={deleteTask(task)} className='delete-task'>x</span>
@@ -83,7 +122,6 @@ function Tasks(){
             </div>
         </div>
     )
-
 }
 
 export default Tasks;
