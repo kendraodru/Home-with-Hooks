@@ -10,19 +10,6 @@ function Gallery(){
     // const [index, setIndex] = useState(0);
     const [delay, setDelay] = useState(3 * SECONDS);
     const [increment, setIncrement] = useState(1)
-
-//     useEffect(()=>{
-//         const interval = setInterval(()=> {
-//             setIndex(sortedIndex =>{
-//                 return (sortedIndex + increment) % PICTURES.length;  
-//             })
-//         }, delay);
-//         return () => {
-//             clearInterval(interval)
-//             //avoids memory leaks, clean up call back. 
-//         };
-//     }, [delay, increment]); //<- listens to delay changes, useEffect will run again
-// //have to use a call back because it doesnt use the latest index
     const index = useDynamicTransition({
         delay, increment, length: PICTURES.length
     })
